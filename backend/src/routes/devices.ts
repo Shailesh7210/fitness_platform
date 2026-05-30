@@ -7,17 +7,15 @@ import { validate }         from '../middleware/validate';
 const router = Router();
 router.use(authenticate);
 
-const PLATFORMS = ['fitbit','garmin','apple_health','google_fit','whoop'];
+const PLATFORMS = ['fitbit', 'garmin', 'apple_health', 'google_fit', 'whoop'];
 
-// GET /api/devices
-// Get all device integrations for the logged-in user
+// ── GET /api/devices ────────────────────────────────────────────────
 router.get('/', async (req: AuthRequest, res: Response) => {
   try {
-    const integrations = await DeviceIntegration.find({
-      userId: req.user!.id,
-    });
+    const integrations = await DeviceIntegration.find(
+      { userId: req.user!.id } as any
+    );
 
-    // Return all platforms with their status
     const result = PLATFORMS.map(platform => {
       const found = integrations.find(i => i.platform === platform);
       return {
@@ -36,19 +34,16 @@ router.get('/', async (req: AuthRequest, res: Response) => {
   }
 });
 
-// POST /api/devices/:platform/connect
-// Simulate connecting a device
+// ── POST /api/devices/:platform/connect ─────────────────────────────
 router.post(
   '/:platform/connect',
   [
-    body('accessToken')
-      .notEmpty()
-      .withMessage('Access token is required'),
+    body('accessToken').notEmpty().withMessage('Access token is required'),
   ],
   validate,
   async (req: AuthRequest, res: Response) => {
     try {
-      const { platform } = req.params;
+      const platform = String(req.params.platform);
 
       if (!PLATFORMS.includes(platform)) {
         res.status(400).json({ message: 'Invalid platform' });
@@ -56,7 +51,7 @@ router.post(
       }
 
       const integration = await DeviceIntegration.findOneAndUpdate(
-        { userId: req.user!.id, platform },
+        { userId: req.user!.id, platform } as any,
         {
           $set: {
             status:       'connected',
@@ -75,15 +70,20 @@ router.post(
   }
 );
 
-// DELETE /api/devices/:platform/disconnect
+// ── DELETE /api/devices/:platform/disconnect ─────────────────────────
 router.delete(
   '/:platform/disconnect',
   async (req: AuthRequest, res: Response) => {
     try {
-      const { platform } = req.params;
+      const platform = String(req.params.platform);
+
+      if (!PLATFORMS.includes(platform)) {
+        res.status(400).json({ message: 'Invalid platform' });
+        return;
+      }
 
       await DeviceIntegration.findOneAndUpdate(
-        { userId: req.user!.id, platform },
+        { userId: req.user!.id, platform } as any,
         {
           $set: {
             status:      'disconnected',
@@ -100,34 +100,37 @@ router.delete(
   }
 );
 
-// POST /api/devices/:platform/sync
-// Simulate a manual sync
+// ── POST /api/devices/:platform/sync ────────────────────────────────
 router.post(
   '/:platform/sync',
   async (req: AuthRequest, res: Response) => {
     try {
-      const { platform } = req.params;
+      const platform = String(req.params.platform);
 
-      const integration = await DeviceIntegration.findOne({
-        userId: req.user!.id,
-        platform,
-      });
+      if (!PLATFORMS.includes(platform)) {
+        res.status(400).json({ message: 'Invalid platform' });
+        return;
+      }
+
+      const integration = await DeviceIntegration.findOne(
+        { userId: req.user!.id, platform } as any
+      );
 
       if (!integration || integration.status === 'disconnected') {
         res.status(400).json({ message: 'Device is not connected' });
         return;
       }
 
-      // Set to syncing
+      // Set to syncing immediately
       await DeviceIntegration.findOneAndUpdate(
-        { userId: req.user!.id, platform },
+        { userId: req.user!.id, platform } as any,
         { $set: { status: 'syncing' } }
       );
 
-      // Simulate sync delay then mark as done
+      // Simulate async sync — marks done after 2 seconds
       setTimeout(async () => {
         await DeviceIntegration.findOneAndUpdate(
-          { userId: req.user!.id, platform },
+          { userId: req.user!.id, platform } as any,
           {
             $set: {
               status:         'connected',
@@ -147,13 +150,20 @@ router.post(
   }
 );
 
-// POST /api/devices/:platform/retry
+// ── POST /api/devices/:platform/retry ───────────────────────────────
 router.post(
   '/:platform/retry',
   async (req: AuthRequest, res: Response) => {
     try {
+      const platform = String(req.params.platform);
+
+      if (!PLATFORMS.includes(platform)) {
+        res.status(400).json({ message: 'Invalid platform' });
+        return;
+      }
+
       const integration = await DeviceIntegration.findOneAndUpdate(
-        { userId: req.user!.id, platform: req.params.platform },
+        { userId: req.user!.id, platform } as any,
         {
           $set: {
             status:       'connected',
@@ -165,7 +175,7 @@ router.post(
       );
 
       if (!integration) {
-        res.status(404).json({ message: 'Integration not found' });
+        res.status(404).json({ message: 'Integration not found. Connect the device first.' });
         return;
       }
 
