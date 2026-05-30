@@ -5,22 +5,34 @@ import dotenv    from 'dotenv';
 import { connectDB } from './config/db';
 
 // Phase 1
-import authRoutes           from './routes/auth';
-import userRoutes           from './routes/users';
-import adminUserRoutes      from './routes/admin/users';
+import authRoutes            from './routes/auth';
+import userRoutes            from './routes/users';
+import adminUserRoutes       from './routes/admin/users';
 
 // Phase 2
-import challengeRoutes      from './routes/challenges';
-import leaderboardRoutes    from './routes/leaderboard';
-import adminChallengeRoutes from './routes/admin/challenges';
+import challengeRoutes       from './routes/challenges';
+import leaderboardRoutes     from './routes/leaderboard';
+import adminChallengeRoutes  from './routes/admin/challenges';
 
 // Phase 3
-import nutritionRoutes      from './routes/nutrition';
-import programRoutes        from './routes/programs';
-import onboardingRoutes     from './routes/onboarding';
-import deviceRoutes         from './routes/devices';
-import adminProgramRoutes   from './routes/admin/programs';
+import nutritionRoutes       from './routes/nutrition';
+import programRoutes         from './routes/programs';
+import onboardingRoutes      from './routes/onboarding';
+import deviceRoutes          from './routes/devices';
+import adminProgramRoutes    from './routes/admin/programs';
 import adminOnboardingRoutes from './routes/admin/onboarding';
+
+// Phase 4
+import postRoutes            from './routes/posts';
+import configRoutes          from './routes/config';
+import adminModerationRoutes from './routes/admin/moderation';
+import adminAnalyticsRoutes  from './routes/admin/analytics';
+import adminPipelineRoutes   from './routes/admin/pipeline';
+import adminConfigRoutes     from './routes/admin/config';
+
+// Phase 5
+import chatRoutes            from './routes/chat';
+import adminChatRoutes       from './routes/admin/chat';
 
 dotenv.config();
 
@@ -51,7 +63,19 @@ app.use('/api/devices',           deviceRoutes);
 app.use('/api/admin/programs',    adminProgramRoutes);
 app.use('/api/admin/onboarding',  adminOnboardingRoutes);
 
-// ── Health ──────────────────────────────────────────────────────────
+// Phase 4
+app.use('/api/posts',             postRoutes);
+app.use('/api/config',            configRoutes);
+app.use('/api/admin/moderation',  adminModerationRoutes);
+app.use('/api/admin/analytics',   adminAnalyticsRoutes);
+app.use('/api/admin/pipeline',    adminPipelineRoutes);
+app.use('/api/admin/config',      adminConfigRoutes);
+
+// Phase 5
+app.use('/api/chat',              chatRoutes);
+app.use('/api/admin/chat',        adminChatRoutes);
+
+// ── Health check ────────────────────────────────────────────────────
 app.get('/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
