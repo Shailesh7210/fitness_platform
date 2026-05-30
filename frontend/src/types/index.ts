@@ -134,7 +134,7 @@ export interface Question {
   options:        QuestionOption[];
   nextQuestionId: string;
   branchMap:      Record<string, string>;
-  showIf:         { questionId: string; operator: string; value: any } | null;
+  showIf:         { questionId: string; operator: string; value: unknown } | null;
 }
 
 export interface Questionnaire {
@@ -212,10 +212,10 @@ export interface AdminStats {
     totalEnrollments: number;
   };
   content: {
-    totalPosts:             number;
-    pendingModeration:      number;
-    totalMealLogs:          number;
-    totalProgramEnrollments:number;
+    totalPosts:              number;
+    pendingModeration:       number;
+    totalMealLogs:           number;
+    totalProgramEnrollments: number;
   };
 }
 
@@ -227,10 +227,10 @@ export interface PipelineRun {
   startedAt:   string | null;
   doneAt:      string | null;
   stages: {
-    stage:     string;
-    status:    string;
-    records:   number;
-    error:     string;
+    stage:   string;
+    status:  string;
+    records: number;
+    error:   string;
   }[];
 }
 

@@ -1,0 +1,34 @@
+import { create } from 'zustand';
+import type { User } from '../types';
+
+interface AuthState {
+  user:          User | null;
+  token:         string | null;
+  isLoading:     boolean;
+  setAuth:       (user: User, token: string) => void;
+  clearAuth:     () => void;
+  setLoading:    (v: boolean) => void;
+  isAdmin:       () => boolean;
+  isLoggedIn:    () => boolean;
+}
+
+export const useAuthStore = create<AuthState>((set, get) => ({
+  user:      null,
+  token:     localStorage.getItem('token'),
+  isLoading: true,
+
+  setAuth: (user, token) => {
+    localStorage.setItem('token', token);
+    set({ user, token, isLoading: false });
+  },
+
+  clearAuth: () => {
+    localStorage.removeItem('token');
+    set({ user: null, token: null, isLoading: false });
+  },
+
+  setLoading: (v) => set({ isLoading: v }),
+
+  isAdmin:    () => get().user?.role === 'admin',
+  isLoggedIn: () => !!get().token,
+}));
