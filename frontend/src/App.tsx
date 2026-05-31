@@ -24,11 +24,17 @@ import { DevicesPage }         from './pages/user/DevicesPage';
 import { SocialPage }          from './pages/user/SocialPage';
 import { ChatPage }            from './pages/user/ChatPage';
 
-// Admin pages — Phase 6
+// Admin pages
 import { AdminDashboard }  from './pages/admin/AdminDashboard';
 import { AdminUsers }      from './pages/admin/AdminUsers';
 import { AdminChallenges } from './pages/admin/AdminChallenges';
 import { AdminPrograms }   from './pages/admin/AdminPrograms';
+import { AdminModeration } from './pages/admin/AdminModeration';
+import { AdminAnalytics }  from './pages/admin/AdminAnalytics';
+import { AdminPipeline }   from './pages/admin/AdminPipeline';
+import { AdminOnboarding } from './pages/admin/AdminOnboarding';
+import { AdminChat }       from './pages/admin/AdminChat';
+import { AdminConfig }     from './pages/admin/AdminConfig';
 
 export default function App() {
   const { setAuth, clearAuth, setLoading } = useAuthStore();
@@ -74,11 +80,17 @@ export default function App() {
         <Route path="/social"          element={<ProtectedRoute><SocialPage /></ProtectedRoute>} />
         <Route path="/chat"            element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />
 
-        {/* Admin — Phase 6 */}
+        {/* Admin */}
         <Route path="/admin"                element={<AdminRoute><AdminDashboard /></AdminRoute>} />
         <Route path="/admin/users"          element={<AdminRoute><AdminUsers /></AdminRoute>} />
         <Route path="/admin/challenges"     element={<AdminRoute><AdminChallenges /></AdminRoute>} />
         <Route path="/admin/programs"       element={<AdminRoute><AdminPrograms /></AdminRoute>} />
+        <Route path="/admin/moderation"     element={<AdminRoute><AdminModeration /></AdminRoute>} />
+        <Route path="/admin/analytics"      element={<AdminRoute><AdminAnalytics /></AdminRoute>} />
+        <Route path="/admin/pipeline"       element={<AdminRoute><AdminPipeline /></AdminRoute>} />
+        <Route path="/admin/onboarding"     element={<AdminRoute><AdminOnboarding /></AdminRoute>} />
+        <Route path="/admin/chat"           element={<AdminRoute><AdminChat /></AdminRoute>} />
+        <Route path="/admin/config"         element={<AdminRoute><AdminConfig /></AdminRoute>} />
 
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
